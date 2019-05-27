@@ -45,7 +45,7 @@ class GeoCoder
     protected $serviceUrl = 'https://maps.googleapis.com/maps/api/geocode/json?&address=';
 
     /**
-     * Api key for gecode api
+     * Api key for geo code api
      *
      * @var string
      */
@@ -204,12 +204,12 @@ class GeoCoder
     /**
      * Update Geo Location
      * Sets latitude and longitude of an object. The object
-     * must implement the \DWenzel\T3events\Domain\Model\GeoCodableInterface.
+     * must implement the GeoCodableInterface.
      * Will first read city and zip attributes then tries to
      * get geo location values and if succeeds update the latitude and
      * longitude values of the object.
      *
-     * @var \DWenzel\T3events\Domain\Model\GeoCodableInterface $object
+     * @var GeoCodableInterface $object
      */
     public function updateGeoLocation(GeoCodableInterface &$object)
     {

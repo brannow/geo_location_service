@@ -38,7 +38,15 @@ interface GeoCodableInterface
 
     public function getLongitude();
 
+    /**
+     * @param $latitude
+     * @return void
+     */
     public function setLatitude($latitude);
 
+    /**
+     * @param $longitude
+     * @return mixed
+     */
     public function setLongitude($longitude);
 }
