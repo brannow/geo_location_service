@@ -42,7 +42,7 @@ class GeoCoder
      *
      * @var string Base Url for geo coding service.
      */
-    protected $serviceUrl = 'https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=';
+    protected $serviceUrl = 'https://maps.googleapis.com/maps/api/geocode/json?&address=';
 
     /**
      * Api key for gecode api
