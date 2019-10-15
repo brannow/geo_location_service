@@ -12,7 +12,7 @@
 
 $EM_CONF[$_EXTKEY] = array (
   'title' => 'Geo Location Service',
-  'description' => 'Get latitude and longatitute for an address per google api call',
+  'description' => 'Get latitude and longitude for an address per google api call',
   'category' => 'be',
   'author' => 'Erik Rauchstein',
   'author_email' => 'erik.rauchstein@cps-it.de',
@@ -21,12 +21,12 @@ $EM_CONF[$_EXTKEY] = array (
   'createDirs' => '',
   'clearCacheOnLoad' => 0,
   'author_company' => '',
-  'version' => '0.0.1',
+  'version' => '0.2.0',
   'constraints' =>
   array (
     'depends' =>
     array (
-      'typo3' => '7.6.0-7.6.99',
+      'typo3' => '9.5.0-0.0.0',
     ),
     'conflicts' =>
     array (
