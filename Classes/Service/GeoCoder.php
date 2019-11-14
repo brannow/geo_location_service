@@ -6,6 +6,7 @@ namespace CPSIT\GeoLocationService\Service;
  *  Copyright notice
  *
  *  (c) 2017 Erik Rauchstein <erik.rauchstein@cps-it.de>
+ *  (c) 2019 Elias Häußler <e.haeussler@familie-redlich.de>
  *
  *  All rights reserved
  *
@@ -26,8 +27,10 @@ namespace CPSIT\GeoLocationService\Service;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use CPSIT\GeoLocationService\Cache\GeoLocationCache;
 use CPSIT\GeoLocationService\Domain\Model\GeoCodableInterface;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Geo coding service
@@ -57,6 +60,11 @@ class GeoCoder
      * @var array
      */
     protected $extConf;
+
+    /**
+     * @var GeoLocationCache
+     */
+    protected $cache;
 
     /**
      * Returns the base url of the geo coding service
@@ -96,6 +104,7 @@ class GeoCoder
 
     public function __construct()
     {
+        $this->cache = GeneralUtility::makeInstance(GeoLocationCache::class);
         $this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['geo_location_service']);
         $this->setApiKey($this->extConf['googleApiKey']);
     }
@@ -108,15 +117,36 @@ class GeoCoder
      */
     public function getLocation($address)
     {
+        $cacheIdentifier = $this->cache->calculateCacheIdentifier($address, $this->getApiKey());
+
+        try {
+            $result = $this->cache->get($cacheIdentifier);
+            if ($result !== false) {
+                return $result;
+            }
+        } catch (NoSuchCacheException $e) {
+            // Intended fallthrough if cache is not available.
+        }
+
+
         $url = $this->serviceUrl . urlencode($address) . '&key=' . $this->getApiKey();
 
-        $response_json = $this->getUrl($url);
-        $response = json_decode($response_json, true);
-        if ($response['status'] == 'OK') {
-            return $response['results'][0]['geometry']['location'];
-        } else {
+        $jsonResponse = $this->getUrl($url);
+        $response = json_decode($jsonResponse, true);
+
+        if ($response['status'] !== 'OK') {
             return false;
         }
+
+        $result = $response['results'][0]['geometry']['location'];
+
+        try {
+            $this->cache->set($cacheIdentifier, $result);
+        } catch (NoSuchCacheException $e) {
+            // Intended fallthrough if cache is not available.
+        }
+
+        return $result;
     }
 
     /**
