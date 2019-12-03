@@ -26,6 +26,8 @@ namespace CPSIT\GeoLocationService\Service;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Exception;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use CPSIT\GeoLocationService\Domain\Model\GeoCodableInterface;
 
@@ -96,7 +98,11 @@ class GeoCoder
 
     public function __construct()
     {
-        $this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['geo_location_service']);
+        try {
+            $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('geo_location_service');
+        } catch (Exception $e) {
+            $this->extConf = [];
+        }
         $this->setApiKey($this->extConf['googleApiKey']);
     }
 
