@@ -27,11 +27,13 @@ namespace CPSIT\GeoLocationService\Service;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use CPSIT\GeoLocationService\Cache\GeoLocationCache;
+use CPSIT\GeoLocationService\Domain\Model\GeoCodableInterface;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Exception;
 use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use CPSIT\GeoLocationService\Domain\Model\GeoCodableInterface;
 
 /**
  * Geo coding service
@@ -75,6 +77,11 @@ class GeoCoder
     protected $extConf;
 
     /**
+     * @var GeoLocationCache
+     */
+    protected $cache;
+
+    /**
      * Returns the base url of the geo coding service
      *
      * @return string
@@ -112,6 +119,8 @@ class GeoCoder
 
     public function __construct()
     {
+        $this->cache = GeneralUtility::makeInstance(GeoLocationCache::class);
+
         try {
             $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('geo_location_service');
         } catch (Exception $e) {
@@ -136,25 +145,45 @@ class GeoCoder
         ]);
         $url = $this->buildServiceUrlWithParameters($apiParameters);
 
-        $response_json = $this->getUrl($url);
-        $response = json_decode($response_json, true);
-        if ($response['status'] == 'OK') {
-            return $response['results'][0]['geometry']['location'];
-        } else {
+        // Try to get geo location from cache
+        $cacheIdentifier = $this->cache->calculateCacheIdentifier($url);
+        try {
+            $result = $this->cache->get($cacheIdentifier);
+            if ($result !== false) {
+                return $result;
+            }
+        } catch (NoSuchCacheException $e) {
+            // Intended fallthrough if cache is not available.
+        }
+
+        $jsonResponse = $this->getUrl((string) $url);
+        $response = json_decode($jsonResponse, true);
+
+        if ($response['status'] !== 'OK') {
             return false;
         }
+
+        $result = $response['results'][0]['geometry']['location'];
+
+        try {
+            $this->cache->set($cacheIdentifier, $result);
+        } catch (NoSuchCacheException $e) {
+            // Intended fallthrough if cache is not available.
+        }
+
+        return $result;
     }
 
     /**
      * @param array $parameters
-     * @return string
+     * @return Uri
      */
-    public function buildServiceUrlWithParameters(array $parameters = []): string
+    public function buildServiceUrlWithParameters(array $parameters = []): Uri
     {
         $uri = new Uri($this->serviceUrl);
 
         if (empty($parameters)) {
-            return (string) $uri;
+            return $uri;
         }
 
         // Remove invalid URI parameters
@@ -171,7 +200,7 @@ class GeoCoder
         $queryParams = http_build_query($parameters);
         $uri = $uri->withQuery($queryParams);
 
-        return (string) $uri;
+        return $uri;
     }
 
     /**
