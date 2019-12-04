@@ -6,6 +6,7 @@ namespace CPSIT\GeoLocationService\Service;
  *  Copyright notice
  *
  *  (c) 2017 Erik Rauchstein <erik.rauchstein@cps-it.de>
+ *  (c) 2019 Elias Häußler <e.haeussler@familie-redlich.de>
  *
  *  All rights reserved
  *
@@ -28,6 +29,7 @@ namespace CPSIT\GeoLocationService\Service;
 
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Exception;
+use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use CPSIT\GeoLocationService\Domain\Model\GeoCodableInterface;
 
@@ -38,6 +40,18 @@ use CPSIT\GeoLocationService\Domain\Model\GeoCodableInterface;
  */
 class GeoCoder
 {
+    /**
+     * @var array Valid URL parameters for Google Geocoding API
+     * @see https://developers.google.com/maps/documentation/geocoding/intro#GeocodingRequests
+     */
+    public const VALID_SERVICE_URL_PARAMETERS = [
+        'address',
+        'key',
+        'bounds',
+        'language',
+        'region',
+        'components',
+    ];
 
     /**
      * Service Url
@@ -110,11 +124,17 @@ class GeoCoder
      * Get geo location encoded from Google Maps geocode service.
      *
      * @param string $address An address to encode.
+     * @param array $additionalParameters
      * @return array|false Array containing geo location information
      */
-    public function getLocation($address)
+    public function getLocation($address, array $additionalParameters = [])
     {
-        $url = $this->serviceUrl . urlencode($address) . '&key=' . $this->getApiKey();
+        // Build request URI
+        $apiParameters = array_merge($additionalParameters, [
+            'address' => urlencode($address),
+            'key' => $this->getApiKey(),
+        ]);
+        $url = $this->buildServiceUrlWithParameters($apiParameters);
 
         $response_json = $this->getUrl($url);
         $response = json_decode($response_json, true);
@@ -123,6 +143,35 @@ class GeoCoder
         } else {
             return false;
         }
+    }
+
+    /**
+     * @param array $parameters
+     * @return string
+     */
+    public function buildServiceUrlWithParameters(array $parameters = []): string
+    {
+        $uri = new Uri($this->serviceUrl);
+
+        if (empty($parameters)) {
+            return (string) $uri;
+        }
+
+        // Remove invalid URI parameters
+        $parameters = array_filter($parameters, function ($parameterName) {
+            return in_array($parameterName, self::VALID_SERVICE_URL_PARAMETERS);
+        }, ARRAY_FILTER_USE_KEY);
+
+        // Respect predefined parameters in service URI
+        if (!empty($uri->getQuery())) {
+            $parameters += GeneralUtility::explodeUrl2Array($uri->getQuery());
+        }
+
+        // Build URI with parameters
+        $queryParams = http_build_query($parameters);
+        $uri = $uri->withQuery($queryParams);
+
+        return (string) $uri;
     }
 
     /**

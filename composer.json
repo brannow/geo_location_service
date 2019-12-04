@@ -16,6 +16,11 @@
     {
       "name": "Dirk Wenzel",
       "role": "Developer"
+    },
+    {
+      "name": "Elias Häußler",
+      "email": "e.haeussler@familie-redlich.de",
+      "role": "Developer"
     }
   ],
   "require": {
