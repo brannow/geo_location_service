@@ -140,7 +140,7 @@ class GeoCoder
     {
         // Build request URI
         $apiParameters = array_merge($additionalParameters, [
-            'address' => urlencode($address),
+            'address' => $address,
             'key' => $this->getApiKey(),
         ]);
         $url = $this->buildServiceUrlWithParameters($apiParameters);
@@ -195,6 +195,9 @@ class GeoCoder
         if (!empty($uri->getQuery())) {
             $parameters += GeneralUtility::explodeUrl2Array($uri->getQuery());
         }
+
+        // Encode URI parameters correctly with UTF-8
+        $parameters = array_map('utf8_encode', $parameters);
 
         // Build URI with parameters
         $queryParams = http_build_query($parameters);
