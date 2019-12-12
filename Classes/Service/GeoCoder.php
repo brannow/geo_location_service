@@ -196,11 +196,8 @@ class GeoCoder
             $parameters += GeneralUtility::explodeUrl2Array($uri->getQuery());
         }
 
-        // Encode URI parameters correctly with UTF-8
-        $parameters = array_map('utf8_encode', $parameters);
-
         // Build URI with parameters
-        $queryParams = http_build_query($parameters);
+        $queryParams = urldecode(http_build_query($parameters));
         $uri = $uri->withQuery($queryParams);
 
         return $uri;
