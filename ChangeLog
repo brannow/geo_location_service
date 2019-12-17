@@ -1,3 +1,13 @@
+2019-12-17         [RELEASE] Release of geo_location_service 0.3.0 (Elias Häußler)
+2019-12-12 66a674e [BUGFIX] Encode URL parameters for geo location request correctly (Elias Häußler)
+2019-12-10 d9a814f [BUGFIX] Ensure URI parameters are always encoded correctly (Elias Häußler)
+2019-12-04 62b67eb [FEATURE] Allow passing custom parameters to service URL for API requests (Elias Häußler)
+2019-12-03 b8c3b1d [TASK] Remove obsolete ext_localconf file (Elias Häußler)
+2019-12-03 ce71fe1 [TASK] Fix version constraint for TYPO3 in ext_emconf.php (Elias Häußler)
+2019-12-03 f9219e5 [TASK] Add platform requirements to composer.json (Elias Häußler)
+2019-12-03 c10f56c [TASK] Use API to read extension configuration (Elias Häußler)
+2019-11-14 4471a14 [FEATURE] Introduce GeoLocation cache to reduce API calls (Elias Häußler)
+
 2019-05-27         [RELEASE] Release of geo_location_service 0.2.0 (Dirk Wenzel)
 2019-05-27 2574515 [BUGFIX] typo corrected (Dirk Wenzel)
 2019-05-27 9ab07c2 [TASK] add ChangeLog (Dirk Wenzel)
