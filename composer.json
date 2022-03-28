@@ -30,6 +30,8 @@
 		"typo3/cms-core": "^10.4 || ^11.5"
 	},
 	"require-dev": {
+		"rector/rector": "^0.12.19",
+		"saschaegerer/phpstan-typo3": "^1.1",
 		"typo3/coding-standards": "^0.5.0"
 	},
 	"replace": {
@@ -47,5 +49,11 @@
 			"typo3/cms-composer-installers": true
 		},
 		"sort-packages": true
+	},
+	"scripts": {
+		"sca": [
+			"@sca:php"
+		],
+		"sca:php": "phpstan analyse -c phpstan.neon"
 	}
 }
