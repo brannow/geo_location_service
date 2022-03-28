@@ -120,16 +120,17 @@ class GeoCoder
         $this->apiKey = $apiKey;
     }
 
-    public function __construct()
+    public function __construct(GeoLocationCache $cache, ExtensionConfiguration $extensionConfiguration)
     {
-        $this->cache = GeneralUtility::makeInstance(GeoLocationCache::class);
+        $this->cache = $cache;
 
         try {
-            $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('geo_location_service');
+            $this->extConf = $extensionConfiguration->get('geo_location_service');
         } catch (Exception $e) {
             $this->extConf = [];
         }
-        $this->setApiKey($this->extConf['googleApiKey']);
+
+        $this->setApiKey((string)$this->extConf['googleApiKey']);
     }
 
     /**
