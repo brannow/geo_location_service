@@ -17,7 +17,6 @@ $EM_CONF[$_EXTKEY] = [
     'author' => 'Erik Rauchstein',
     'author_email' => 'erik.rauchstein@cps-it.de',
     'state' => 'beta',
-    'createDirs' => '',
     'author_company' => '',
     'version' => '0.3.0',
     'constraints' => [
