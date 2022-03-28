@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace CPSIT\GeoLocationService\Cache;
 
 /*
@@ -47,8 +49,7 @@ class GeoLocationCache
     }
 
     /**
-     * @param string $cacheIdentifier
-     * @return mixed|null
+     * @return mixed
      */
     public function get(string $cacheIdentifier)
     {
@@ -56,10 +57,8 @@ class GeoLocationCache
     }
 
     /**
-     * @param string $cacheIdentifier
-     * @param $data
-     * @param array $tags
-     * @param int|null $lifetime
+     * @param mixed $data
+     * @param list<string> $tags
      */
     public function set(string $cacheIdentifier, $data, array $tags = [], int $lifetime = null): void
     {
@@ -70,6 +69,6 @@ class GeoLocationCache
     {
         $queryParams = GeneralUtility::explodeUrl2Array($serviceUrl->getQuery());
         array_multisort($queryParams);
-        return sha1((string) $serviceUrl->withQuery(http_build_query($queryParams)));
+        return sha1((string)$serviceUrl->withQuery(http_build_query($queryParams)));
     }
 }

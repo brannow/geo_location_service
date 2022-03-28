@@ -108,7 +108,7 @@ class GeoCoder
             // Intended fallthrough if cache is not available.
         }
 
-        $jsonResponse = $this->getUrl((string) $url);
+        $jsonResponse = $this->getUrl((string)$url);
         $response = json_decode($jsonResponse, true);
 
         if ('OK' !== ($response['status'] ?? null)) {
@@ -138,9 +138,11 @@ class GeoCoder
         }
 
         // Remove invalid URI parameters
-        $parameters = array_filter($parameters, function ($parameterName) {
-            return in_array($parameterName, self::VALID_SERVICE_URL_PARAMETERS);
-        }, ARRAY_FILTER_USE_KEY);
+        $parameters = array_filter(
+            $parameters,
+            fn (string $parameterName): bool => in_array($parameterName, self::VALID_SERVICE_URL_PARAMETERS, true),
+            ARRAY_FILTER_USE_KEY
+        );
 
         // Respect predefined parameters in service URI
         if (!empty($uri->getQuery())) {
@@ -186,13 +188,14 @@ class GeoCoder
         $rBearing = deg2rad($bearing);
         $rAngDist = $distance / $radius;
 
-        $rLatB = asin(sin($rLat) * cos($rAngDist) +
-            cos($rLat) * sin($rAngDist) * cos($rBearing));
+        $rLatB = asin(sin($rLat) * cos($rAngDist) + cos($rLat) * sin($rAngDist) * cos($rBearing));
 
-        $rLonB = $rLon + atan2(sin($rBearing) * sin($rAngDist) * cos($rLat),
-                cos($rAngDist) - sin($rLat) * sin($rLatB));
+        $rLonB = $rLon + atan2(
+            sin($rBearing) * sin($rAngDist) * cos($rLat),
+            cos($rAngDist) - sin($rLat) * sin($rLatB)
+        );
 
-        return array('lat' => rad2deg($rLatB), 'lng' => rad2deg($rLonB));
+        return ['lat' => rad2deg($rLatB), 'lng' => rad2deg($rLonB)];
     }
 
     /**
@@ -207,10 +210,12 @@ class GeoCoder
      */
     public function getBoundsByRadius(float $lat, float $lng, float $distance, string $units = 'km'): array
     {
-        return array('N' => $this->destination($lat, $lng, 0, $distance, $units),
-            'E' => $this->destination($lat, $lng, 90, $distance, $units),
-            'S' => $this->destination($lat, $lng, 180, $distance, $units),
-            'W' => $this->destination($lat, $lng, 270, $distance, $units));
+        return [
+            'N' => $this->destination($lat, $lng, 0.0, $distance, $units),
+            'E' => $this->destination($lat, $lng, 90.0, $distance, $units),
+            'S' => $this->destination($lat, $lng, 180.0, $distance, $units),
+            'W' => $this->destination($lat, $lng, 270.0, $distance, $units),
+        ];
     }
 
     /**
