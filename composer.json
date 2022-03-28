@@ -24,7 +24,7 @@
   ],
   "homepage": "https://github.com/CPS-IT/geo_location_service",
   "require": {
-    "php": "^7.2",
+    "php": "^7.4 || 8.0.*",
     "ext-json": "*",
     "typo3/cms-core": "^9.5 || ^10.4 || ^11.5"
   },
