@@ -39,10 +39,7 @@ class GeoLocationCache
     /** @var int Default cache lifetime */
     public const DEFAULT_LIFETIME = 86400;
 
-    /**
-     * @var FrontendInterface Cache instance
-     */
-    private $cache;
+    private FrontendInterface $cache;
 
     public function __construct(FrontendInterface $cache)
     {
