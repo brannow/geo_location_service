@@ -1,7 +1,7 @@
 services:
   _default:
     autowire: true
-    autoconfiure: true
+    autoconfigure: true
     public: false
 
   CPSIT\GeoLocationService\:
