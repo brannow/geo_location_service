@@ -47,7 +47,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class GeoCoder
 {
     /**
-     * @var array Valid URL parameters for Google Geocoding API
+     * @var list<string> Valid URL parameters for Google Geocoding API
      * @see https://developers.google.com/maps/documentation/geocoding/intro#GeocodingRequests
      */
     public const VALID_SERVICE_URL_PARAMETERS = [
@@ -59,67 +59,14 @@ class GeoCoder
         'components',
     ];
 
-    /**
-     * Service Url
-     *
-     * @var string Base Url for geo coding service.
-     */
-    protected $serviceUrl = 'https://maps.googleapis.com/maps/api/geocode/json?&address=';
+    protected string $serviceUrl = 'https://maps.googleapis.com/maps/api/geocode/json?&address=';
+    protected string $apiKey;
 
     /**
-     * Api key for geo code api
-     *
-     * @var string
+     * @var array<string, mixed>
      */
-    protected $apiKey;
-
-    /**
-     * Configuration set by extension configuration.
-     *
-     * @var array
-     */
-    protected $extConf;
-
-    /**
-     * @var GeoLocationCache
-     */
-    protected $cache;
-
-    /**
-     * Returns the base url of the geo coding service
-     *
-     * @return string
-     */
-    public function getServiceUrl()
-    {
-        return $this->serviceUrl;
-    }
-
-    /**
-     * Set the base url of the geo coding service
-     *
-     * @param $serviceUrl
-     */
-    public function setServiceUrl($serviceUrl)
-    {
-        $this->serviceUrl = $serviceUrl;
-    }
-
-    /**
-     * @return string
-     */
-    public function getApiKey()
-    {
-        return $this->apiKey;
-    }
-
-    /**
-     * @param string $apiKey
-     */
-    public function setApiKey($apiKey)
-    {
-        $this->apiKey = $apiKey;
-    }
+    protected array $extConf;
+    protected GeoLocationCache $cache;
 
     public function __construct(GeoLocationCache $cache, ExtensionConfiguration $extensionConfiguration)
     {
@@ -138,10 +85,10 @@ class GeoCoder
      * Get geo location encoded from Google Maps geocode service.
      *
      * @param string $address An address to encode.
-     * @param array $additionalParameters
-     * @return array|false Array containing geo location information
+     * @param array<string, mixed> $additionalParameters
+     * @return array{lat: float, lng: float}|false Array containing geo location information
      */
-    public function getLocation($address, array $additionalParameters = [])
+    public function getLocation(string $address, array $additionalParameters = [])
     {
         // Build request URI
         $apiParameters = array_merge($additionalParameters, [
@@ -215,7 +162,7 @@ class GeoCoder
      * @return mixed Response
      * @codeCoverageIgnore
      */
-    public function getUrl($url)
+    public function getUrl(string $url)
     {
         return GeneralUtility::getUrl($url);
     }
@@ -225,13 +172,13 @@ class GeoCoder
      *
      * @param float $lat Latitude
      * @param float $lng Longitude
-     * @param $bearing
-     * @param integer $distance Distance
+     * @param float $bearing
+     * @param float $distance Distance
      * @param string $units Units: default km. Any other value will result in computing with mile based constants.
-     * @return array An array with lat and lng values
+     * @return array{lat: float, lng: float} An array with lat and lng values
      * @codeCoverageIgnore
      */
-    public function destination($lat, $lng, $bearing, $distance, $units = 'km')
+    public function destination(float $lat, float $lng, float $bearing, float $distance, string $units = 'km'): array
     {
         $radius = strcasecmp($units, 'km') ? 3963.19 : 6378.137;
         $rLat = deg2rad($lat);
@@ -255,10 +202,10 @@ class GeoCoder
      * @param float $lng Longitude of location
      * @param float $distance Distance around location
      * @param string $units Unit: default km. Any other value will result in computing with mile based constants.
-     * @return array An array describing a bounding box
+     * @return array<string, array{lat: float, lng: float}> An array describing a bounding box
      * @codeCoverageIgnore
      */
-    public function getBoundsByRadius($lat, $lng, $distance, $units = 'km')
+    public function getBoundsByRadius(float $lat, float $lng, float $distance, string $units = 'km'): array
     {
         return array('N' => $this->destination($lat, $lng, 0, $distance, $units),
             'E' => $this->destination($lat, $lng, 90, $distance, $units),
@@ -277,7 +224,7 @@ class GeoCoder
      * @return float
      * @codeCoverageIgnore
      */
-    public function distance($latA, $lonA, $latB, $lonB, $units = 'km')
+    public function distance(float $latA, float $lonA, float $latB, float $lonB, string $units = 'km'): float
     {
         $radius = strcasecmp($units, 'km') ? 3963.19 : 6378.137;
         $rLatA = deg2rad($latA);
@@ -290,18 +237,18 @@ class GeoCoder
     }
 
     /**
-     * Update Geo Location
+     * Update Geo Location.
+     *
      * Sets latitude and longitude of an object. The object
      * must implement the GeoCodableInterface.
      * Will first read city and zip attributes then tries to
      * get geo location values and if succeeds update the latitude and
      * longitude values of the object.
-     *
-     * @var GeoCodableInterface $object
      */
-    public function updateGeoLocation(GeoCodableInterface &$object)
+    public function updateGeoLocation(GeoCodableInterface $object): void
     {
         $city = $object->getPlace();
+
         if (!empty($city)) {
             $address = '';
             $zip = $object->getZip();
@@ -310,10 +257,31 @@ class GeoCoder
             $address .= (!empty($street)) ? $street . ' ' : null;
             $address .= $city;
             $geoLocation = $this->getLocation($address);
+
             if ($geoLocation) {
                 $object->setLatitude($geoLocation['lat']);
                 $object->setLongitude($geoLocation['lng']);
             }
         }
+    }
+
+    public function getServiceUrl(): string
+    {
+        return $this->serviceUrl;
+    }
+
+    public function setServiceUrl(string $serviceUrl): void
+    {
+        $this->serviceUrl = $serviceUrl;
+    }
+
+    public function getApiKey(): string
+    {
+        return $this->apiKey;
+    }
+
+    public function setApiKey(string $apiKey): void
+    {
+        $this->apiKey = $apiKey;
     }
 }
