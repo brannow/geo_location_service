@@ -34,7 +34,6 @@
     }
   },
   "replace": {
-    "geo_location_service": "self.version",
     "typo3-ter/geo-location-service": "self.version"
   },
   "extra": {
