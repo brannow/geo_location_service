@@ -56,10 +56,12 @@
 	"scripts": {
 		"lint": [
 			"@lint:composer",
-			"@lint:editorconfig"
+			"@lint:editorconfig",
+			"@lint:php"
 		],
 		"lint:composer": "@composer normalize --no-check-lock --no-update-lock",
 		"lint:editorconfig": "ec --fix",
+		"lint:php": "php-cs-fixer fix",
 		"sca": [
 			"@sca:php"
 		],
