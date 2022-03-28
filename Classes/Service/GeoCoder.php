@@ -32,6 +32,7 @@ namespace CPSIT\GeoLocationService\Service;
 
 use CPSIT\GeoLocationService\Cache\GeoLocationCache;
 use CPSIT\GeoLocationService\Domain\Model\GeoCodableInterface;
+use Psr\Http\Message\UriInterface;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Exception;
@@ -179,10 +180,9 @@ class GeoCoder
     }
 
     /**
-     * @param array $parameters
-     * @return Uri
+     * @param array<string, mixed> $parameters
      */
-    public function buildServiceUrlWithParameters(array $parameters = []): Uri
+    public function buildServiceUrlWithParameters(array $parameters = []): UriInterface
     {
         $uri = new Uri($this->serviceUrl);
 
