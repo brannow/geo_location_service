@@ -6,6 +6,8 @@ services:
 
   CPSIT\GeoLocationService\:
     resource: '../Classes/*'
+    exclude:
+      - '../Classes/Domain/Model/*'
 
   CPSIT\GeoLocationService\Cache\GeoLocationCache:
     arguments:
