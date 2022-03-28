@@ -21,8 +21,8 @@ namespace CPSIT\GeoLocationService\Cache;
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Psr\Http\Message\UriInterface;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
-use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -69,11 +69,7 @@ class GeoLocationCache
         $this->cache->set($cacheIdentifier, $data, $tags, $lifetime);
     }
 
-    /**
-     * @param Uri $serviceUrl
-     * @return string
-     */
-    public function calculateCacheIdentifier(Uri $serviceUrl): string
+    public function calculateCacheIdentifier(UriInterface $serviceUrl): string
     {
         $queryParams = GeneralUtility::explodeUrl2Array($serviceUrl->getQuery());
         array_multisort($queryParams);
