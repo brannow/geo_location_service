@@ -30,6 +30,7 @@
 		"typo3/cms-core": "^10.4 || ^11.5"
 	},
 	"require-dev": {
+		"armin/editorconfig-cli": "^1.5",
 		"ergebnis/composer-normalize": "^2.24",
 		"rector/rector": "^0.12.19",
 		"saschaegerer/phpstan-typo3": "^1.1",
@@ -54,9 +55,11 @@
 	},
 	"scripts": {
 		"lint": [
-			"@lint:composer"
+			"@lint:composer",
+			"@lint:editorconfig"
 		],
 		"lint:composer": "@composer normalize --no-check-lock --no-update-lock",
+		"lint:editorconfig": "ec --fix",
 		"sca": [
 			"@sca:php"
 		],
