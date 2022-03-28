@@ -21,8 +21,6 @@ namespace CPSIT\GeoLocationService\Cache;
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -46,14 +44,9 @@ class GeoLocationCache
      */
     private $cache;
 
-    /**
-     * Initialize GeoLocation cache.
-     *
-     * @throws NoSuchCacheException
-     */
-    public function __construct()
+    public function __construct(FrontendInterface $cache)
     {
-        $this->cache = GeneralUtility::makeInstance(CacheManager::class)->getCache(self::NAME);
+        $this->cache = $cache;
     }
 
     /**

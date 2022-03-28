@@ -1,0 +1,18 @@
+services:
+  _default:
+    autowire: true
+    autoconfiure: true
+    public: false
+
+  CPSIT\GeoLocationService\:
+    resource: '../Classes/*'
+
+  CPSIT\GeoLocationService\Cache\GeoLocationCache:
+    arguments:
+      $cache: '@cache.geo_location_service.location'
+
+  cache.geo_location_service.location:
+    class: TYPO3\CMS\Core\Cache\Frontend\FrontendInterface
+    factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
+    arguments:
+      - !php/const CPSIT\GeoLocationService\Cache\GeoLocationCache::NAME
