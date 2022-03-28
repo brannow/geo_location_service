@@ -1,13 +1,12 @@
 {
   "name": "cpsit/geo-location-service",
   "description": "Get latitude and longitude for an address per google api call",
+  "license": "GPL-2.0-or-later",
   "type": "typo3-cms-extension",
   "keywords": [
     "TYPO3",
     "extension"
   ],
-  "homepage": "https://github.com/CPS-IT/geo_location_service",
-  "license": "GPL-2.0-or-later",
   "authors": [
     {
       "name": "Erik Rauchstein",
@@ -23,18 +22,26 @@
       "role": "Developer"
     }
   ],
+  "homepage": "https://github.com/CPS-IT/geo_location_service",
   "require": {
-    "typo3/cms-core": "^9.5 || ^10.4 || ^11.5",
     "php": "^7.2",
-    "ext-json": "*"
+    "ext-json": "*",
+    "typo3/cms-core": "^9.5 || ^10.4 || ^11.5"
+  },
+  "replace": {
+    "geo_location_service": "self.version",
+    "typo3-ter/geo-location-service": "self.version"
   },
   "autoload": {
     "psr-4": {
       "CPSIT\\GeoLocationService\\": "Classes/"
     }
   },
-  "replace": {
-    "geo_location_service": "self.version",
-    "typo3-ter/geo-location-service": "self.version"
+  "config": {
+    "allow-plugins": {
+      "typo3/class-alias-loader": true,
+      "typo3/cms-composer-installers": true
+    },
+    "sort-packages": true
   }
 }
