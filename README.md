@@ -1,3 +1,9 @@
+[![Maintainability](https://api.codeclimate.com/v1/badges/b1ccae45336f26162bb1/maintainability)](https://codeclimate.com/github/CPS-IT/geo_location_service/maintainability)
+[![CGL](https://github.com/CPS-IT/geo_location_service/actions/workflows/cgl.yaml/badge.svg)](https://github.com/CPS-IT/geo_location_service/actions/workflows/cgl.yaml)
+[![Latest Stable Version](http://poser.pugx.org/cpsit/geo-location-service/v)](https://packagist.org/packages/cpsit/geo-location-service)
+[![Total Downloads](http://poser.pugx.org/cpsit/geo-location-service/downloads)](https://packagist.org/packages/cpsit/geo-location-service)
+[![License](http://poser.pugx.org/cpsit/geo-location-service/license)](LICENSE.md)
+
 # Geo Location Service
 
 > TYPO3 extension to resolve an address to a geo code via Google Maps API
