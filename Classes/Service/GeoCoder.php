@@ -78,7 +78,7 @@ class GeoCoder
             $this->extConf = [];
         }
 
-        $this->setApiKey((string)$this->extConf['googleApiKey']);
+        $this->setApiKey((string)($this->extConf['googleApiKey'] ?? null));
     }
 
     /**
