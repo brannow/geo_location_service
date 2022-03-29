@@ -35,9 +35,6 @@
 		"saschaegerer/phpstan-typo3": "^1.1",
 		"typo3/coding-standards": "^0.5.0"
 	},
-	"replace": {
-		"typo3-ter/geo-location-service": "self.version"
-	},
 	"autoload": {
 		"psr-4": {
 			"CPSIT\\GeoLocationService\\": "Classes/"
