@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace CPSIT\GeoLocationService\Domain\Model;
 
 /***************************************************************
@@ -28,25 +31,17 @@ namespace CPSIT\GeoLocationService\Domain\Model;
 
 interface GeoCodableInterface
 {
-    public function getPlace();
+    public function getPlace(): string;
 
-    public function getZip();
+    public function getZip(): string;
 
-    public function getAddress();
+    public function getAddress(): string;
 
-    public function getLatitude();
+    public function getLatitude(): float;
 
-    public function getLongitude();
+    public function getLongitude(): float;
 
-    /**
-     * @param $latitude
-     * @return void
-     */
-    public function setLatitude($latitude);
+    public function setLatitude(float $latitude): void;
 
-    /**
-     * @param $longitude
-     * @return mixed
-     */
-    public function setLongitude($longitude);
+    public function setLongitude(float $longitude): void;
 }

@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace CPSIT\GeoLocationService\Cache;
 
 /*
@@ -21,10 +23,8 @@ namespace CPSIT\GeoLocationService\Cache;
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
+use Psr\Http\Message\UriInterface;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
-use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -41,24 +41,15 @@ class GeoLocationCache
     /** @var int Default cache lifetime */
     public const DEFAULT_LIFETIME = 86400;
 
-    /**
-     * @var FrontendInterface Cache instance
-     */
-    private $cache;
+    private FrontendInterface $cache;
 
-    /**
-     * Initialize GeoLocation cache.
-     *
-     * @throws NoSuchCacheException
-     */
-    public function __construct()
+    public function __construct(FrontendInterface $cache)
     {
-        $this->cache = GeneralUtility::makeInstance(CacheManager::class)->getCache(self::NAME);
+        $this->cache = $cache;
     }
 
     /**
-     * @param string $cacheIdentifier
-     * @return mixed|null
+     * @return mixed
      */
     public function get(string $cacheIdentifier)
     {
@@ -66,24 +57,18 @@ class GeoLocationCache
     }
 
     /**
-     * @param string $cacheIdentifier
-     * @param $data
-     * @param array $tags
-     * @param int|null $lifetime
+     * @param mixed $data
+     * @param list<string> $tags
      */
     public function set(string $cacheIdentifier, $data, array $tags = [], int $lifetime = null): void
     {
         $this->cache->set($cacheIdentifier, $data, $tags, $lifetime);
     }
 
-    /**
-     * @param Uri $serviceUrl
-     * @return string
-     */
-    public function calculateCacheIdentifier(Uri $serviceUrl): string
+    public function calculateCacheIdentifier(UriInterface $serviceUrl): string
     {
         $queryParams = GeneralUtility::explodeUrl2Array($serviceUrl->getQuery());
         array_multisort($queryParams);
-        return sha1((string) $serviceUrl->withQuery(http_build_query($queryParams)));
+        return sha1((string)$serviceUrl->withQuery(http_build_query($queryParams)));
     }
 }
