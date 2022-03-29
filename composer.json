@@ -36,7 +36,6 @@
 		"typo3/coding-standards": "^0.5.0"
 	},
 	"replace": {
-		"geo_location_service": "self.version",
 		"typo3-ter/geo-location-service": "self.version"
 	},
 	"autoload": {
@@ -51,6 +50,11 @@
 			"typo3/cms-composer-installers": true
 		},
 		"sort-packages": true
+	},
+	"extra": {
+		"typo3/cms": {
+			"extension-key": "geo_location_service"
+		}
 	},
 	"scripts": {
 		"lint": [
