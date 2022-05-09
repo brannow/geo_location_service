@@ -9,6 +9,9 @@ services:
     exclude:
       - '../Classes/Domain/Model/*'
 
+  CPSIT\GeoLocationService\Service\GeoCoder:
+    public: true
+
   CPSIT\GeoLocationService\Cache\GeoLocationCache:
     arguments:
       $cache: '@cache.geo_location_service.location'
